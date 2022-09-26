@@ -45,14 +45,18 @@ public class App extends Application{
 
         //Generate balls from the config file. These circles translate the balls objects to circles displayed
         ArrayList<Circle> circ = generateCircle(ballsInPlay);
+        GeneratePockets Gen = new GeneratePockets();
+        ArrayList<Pockets> pocketList = Gen.GeneratePocketList(config.boardX(), config.boardY(), (long) (config.getRadius()*1.7));
+        //Changes pocket objects into Circle objects
+        ArrayList<Circle> pockets = generatePocketsToCircles(pocketList);
 
 
-
-//https://mkyong.com/javafx/javafx-animated-ball-example/
+        //https://mkyong.com/javafx/javafx-animated-ball-example/
         //http://www.java2s.com/Code/Java/JavaFX/KeyFrameandTimelinebasedanimation.htm
         primaryStage.setScene(scene);
         root.getChildren().add(canvas);
         root.getChildren().addAll(circ);
+        root.getChildren().addAll(pockets);
         primaryStage.show();
 
         /*Bounds bounds = canvas.getBoundsInLocal();
@@ -119,6 +123,15 @@ public class App extends Application{
 
         return circles;
     }
+    public static ArrayList<Circle> generatePocketsToCircles(ArrayList<Pockets> pocketList){
+        ArrayList<Circle> circles = new ArrayList<Circle>();
+        for (Pockets pocket : pocketList){
+            Circle circle = new Circle(pocket.getX(), pocket.getY(), pocket.getRadius());
+            circles.add(circle);
+        }
+        return circles;
+    }
+
 
     /**
      * This is an updated collision calculation function for 2 balls colliding in 2D space. You may use it however

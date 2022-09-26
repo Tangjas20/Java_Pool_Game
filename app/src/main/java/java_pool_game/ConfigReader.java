@@ -111,7 +111,9 @@ public class ConfigReader {
         return this.tableColour.toUpperCase();
     }
 
-
+    public Long getRadius(){
+        return this.radius;
+    }
 
     public static void main(String[] args) {
     }
