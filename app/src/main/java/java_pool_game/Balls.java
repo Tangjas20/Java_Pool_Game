@@ -3,26 +3,29 @@ package java_pool_game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.Circle;
 
-public class Balls {
-    private int x;
-    private int y;
-    private char colour;
-    private Circle circle;
-    private int radius;
+import java.util.List;
 
-    public Balls(int x, int y, int radius, char colour){
-        this.x = x;
-        this.y = y;
+public class Balls implements ShapeCreator{
+    public Double posX;
+    public Double posY;
+    public String colour;
+    public Long radius;
+    public Double velocityX;
+    public Double velocityY;
+
+    public Balls(Double x, Double y, Long radius, String colour, Double velocityX, Double velocityY){
+        this.posX = x;
+        this.posY = y;
         this.colour = colour;
         this.radius = radius;
-
-    }
-    public void initialiseBall(){
-        Circle circle = new Circle(x, y, radius);
-
-
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
     }
 
+    @Override
+    public void draw(GraphicsContext gc) {
+
+    }
 }
 
 /*
