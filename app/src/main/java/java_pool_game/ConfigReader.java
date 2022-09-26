@@ -3,8 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,7 +17,7 @@ public class ConfigReader {
     private String tableColour;
     private double friction_value;
     private String path;
-    private ArrayList<Balls> ball_array = new ArrayList<>();
+    private ArrayList<Ball> ball_array = new ArrayList<>();
     private Long radius;
     public ConfigReader(){
         this.path = System.getProperty("user.dir") + "/src/main/resources/config.json";
@@ -46,10 +44,10 @@ public class ConfigReader {
             tableY = (Long) ((JSONObject) jsonTable.get("size")).get("y");
             System.out.println(tableX);
             if (tableX > tableY){
-                radius = tableX/6;
+                radius = tableX/40;
             }
             else {
-                radius = tableY/6;
+                radius = tableY/40;
             }
             // getting the friction level.
             // This is a double which should affect the rate at which the balls slow down
@@ -74,11 +72,20 @@ public class ConfigReader {
                 Double velocityY = (Double) ((JSONObject) jsonBall.get("velocity")).get("y");
 
                 Double mass = (Double) jsonBall.get("mass");
-
-                Balls ball = new Balls(positionX, positionY, radius, colour, velocityX, velocityY);
-                ball_array.add(ball);
-
+                if (colour.toUpperCase().equals("BLUE")) {
+                    BlueBall ball = new BlueBall(positionX, positionY, radius, velocityX, velocityY);
+                    ball_array.add(ball);
+                }
+                else if (colour.toUpperCase().equals("RED")) {
+                    RedBall ball = new RedBall(positionX, positionY, radius, velocityX, velocityY);
+                    ball_array.add(ball);
+                }
+                else if (colour.toUpperCase().equals("WHITE")){
+                    WhiteBall ball = new WhiteBall(positionX, positionY, radius, velocityX, velocityY);
+                    ball_array.add(ball);
+                }
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -88,7 +95,7 @@ public class ConfigReader {
         }
 
     }
-    public ArrayList<Balls> returnBalls(){
+    public ArrayList<Ball> returnBalls(){
         return ball_array;
     }
 
@@ -100,11 +107,12 @@ public class ConfigReader {
         return tableY;
     }
 
-
     public String returnBoardColour(){
         return this.tableColour.toUpperCase();
     }
-    public static void main(String[] args) {
 
+
+
+    public static void main(String[] args) {
     }
 }

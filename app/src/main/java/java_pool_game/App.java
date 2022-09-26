@@ -3,19 +3,14 @@
  */
 package java_pool_game;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.canvas.*;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -26,22 +21,29 @@ import java.util.ArrayList;
 
 public class App extends Application{
     private static final double KEY_FRAME_DURATION = 0.017;
-    private ArrayList<Balls> ball_array = new ArrayList<>();
+    private ArrayList<Ball> ballsInPlay;
     public App(){
 
     }
     @Override
     public void start(Stage primaryStage){
+        //Sets up the ConfigReader and reads from the path specified
         ConfigReader config = new ConfigReader("config.json");
         config.parse();
+        this.ballsInPlay = config.returnBalls();
+        primaryStage.setTitle("Assignment_2_Pool_game");
 
+        //Creates the JavaFX scene and paints background depending on config
         Group root = new Group();
         Scene scene = new Scene(root);
         scene.setFill(Paint.valueOf(config.returnBoardColour()));
 
-        primaryStage.setTitle("Assignment_2_Pool_game");
+        //Configure canvas to config size
         Canvas canvas = new Canvas(config.boardX(), config.boardY());
-        ArrayList<Circle> circ = test();
+
+        //Generate balls from the config file. These circles translate the balls objects to circles displayed
+        ArrayList<Circle> circ = generateCircle(ballsInPlay);
+
 
 
 //https://mkyong.com/javafx/javafx-animated-ball-example/
@@ -51,7 +53,7 @@ public class App extends Application{
         root.getChildren().addAll(circ);
         primaryStage.show();
 
-        Bounds bounds = canvas.getBoundsInLocal();
+        /*Bounds bounds = canvas.getBoundsInLocal();
         Timeline animationLoop = new Timeline();
         animationLoop.setCycleCount(Timeline.INDEFINITE);
         KeyFrame frame = new KeyFrame(Duration.seconds(KEY_FRAME_DURATION),
@@ -78,7 +80,7 @@ public class App extends Application{
                     }
                 });
         animationLoop.getKeyFrames().add(frame);
-        animationLoop.play();
+        animationLoop.play();*/
 
 
 
@@ -88,13 +90,33 @@ public class App extends Application{
 
     }
 
-    public static ArrayList<Circle> test(){
+    public static ArrayList<Circle> generateCircle(ArrayList<Ball> BallsInPlay){
         ArrayList<Circle> circles = new ArrayList<Circle>();
-        Circle circle = new Circle(60, 60, 5);
-        circles.add(circle);
-        Circle circle1 = new Circle(50, 50, 20);
-        circles.add(circle1);
+        for (Ball ball : BallsInPlay){
+            if (ball.return_colour().equals("BLUE")){
+                System.out.println("BLUE");
+                //make blue circle
+                Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
+                circle.setFill(Paint.valueOf("BLUE"));
+                circles.add(circle);
+            }
+            else if (ball.return_colour().equals("RED")){
+                //Make red circle
+                System.out.println("RED");
+                Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
+                circle.setFill(Paint.valueOf("RED"));
+                circles.add(circle);
+            }
+            else if (ball.return_colour().equals("WHITE")){
+                System.out.println("WHITE");
+                Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
+                circle.setFill(Paint.valueOf("WHITE"));
+                circles.add(circle);
+            }
+        }
+
         return circles;
     }
+
 
 }
