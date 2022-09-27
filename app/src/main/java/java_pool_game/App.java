@@ -33,7 +33,7 @@ public class App extends Application{
         ConfigReader config = new ConfigReader("config.json");
         config.parse();
         this.ballsInPlay = config.returnBalls();
-        primaryStage.setTitle("Assignment_2_Pool_game");
+        primaryStage.setTitle("Pool_game");
 
         //Creates the JavaFX scene and paints background depending on config
         Group root = new Group();
