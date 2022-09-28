@@ -16,11 +16,11 @@ public class ConfigReader {
     private Long tableX;
     private String tableColour;
     private double friction_value;
-    private String path;
+    public String path;
     private ArrayList<Ball> ball_array = new ArrayList<>();
     private Long radius;
     public ConfigReader(){
-        this.path = System.getProperty("user.dir") + "/src/main/resources/config.json";
+        //this.path = System.getProperty("user.dir") + "/src/main/resources/config.json";
     }
     public ConfigReader(String path){
         this.path = System.getProperty("user.dir") + "/src/main/resources/" + path;

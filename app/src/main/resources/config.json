@@ -3,7 +3,7 @@
     "colour": "green",
     "friction": 1.0,
     "size": {
-      "x": 600,
+      "x": 300,
       "y": 300
     }
   },

@@ -10,8 +10,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -24,16 +27,22 @@ import java.util.ArrayList;
 public class App extends Application{
     private static final double KEY_FRAME_DURATION = 0.017;
     private ArrayList<Ball> ballsInPlay;
+    private Ball cueBall;
+    private Line currentLine;
     public App(){
-
     }
     @Override
     public void start(Stage primaryStage){
         //Sets up the ConfigReader and reads from the path specified
         ConfigReader config = new ConfigReader("config.json");
+        System.out.println(config.path);
         config.parse();
         this.ballsInPlay = config.returnBalls();
         primaryStage.setTitle("Pool_game");
+        //primaryStage.setResizable(false);
+        //primaryStage.setWidth(config.boardX());
+        //primaryStage.setHeight(config.boardX());
+
 
         //Creates the JavaFX scene and paints background depending on config
         Group root = new Group();
@@ -43,16 +52,37 @@ public class App extends Application{
         //Configure canvas to config size
         Canvas canvas = new Canvas(config.boardX(), config.boardY());
 
+        //canvas.setWidth(config.boardX());
+        System.out.println(config.boardX());
         //Generate balls from the config file. These circles translate the balls objects to circles displayed
         ArrayList<Circle> circ = generateCircle(ballsInPlay);
         GeneratePockets Gen = new GeneratePockets();
         ArrayList<Pockets> pocketList = Gen.GeneratePocketList(config.boardX(), config.boardY(), (long) (config.getRadius()*1.7));
         //Changes pocket objects into Circle objects
         ArrayList<Circle> pockets = generatePocketsToCircles(pocketList);
+        for (Ball ball: ballsInPlay){
+            if (ball.return_colour().equals("WHITE")){
+                this.cueBall = ball;
+            }
+        }
+
+
 
 
         //https://mkyong.com/javafx/javafx-animated-ball-example/
         //http://www.java2s.com/Code/Java/JavaFX/KeyFrameandTimelinebasedanimation.htm
+        /*scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                System.out.println("mouse click detected! " + mouseEvent.getSource());
+                System.out.println(cueBall.getX() +", " + cueBall.getY());
+            }
+        });
+        scene.addEventFilter(MouseEvent.)
+        */
+
+        mouseEvents(root);
+
         primaryStage.setScene(scene);
         root.getChildren().add(canvas);
         root.getChildren().addAll(circ);
@@ -93,6 +123,44 @@ public class App extends Application{
     }
     public static void main(String[] args){
         launch(args);
+
+    }
+
+    public void mouseEvents(Group root){
+        root.setOnMousePressed(e -> {
+            if (currentLine == null) {
+                currentLine = new Line(cueBall.getX(), cueBall.getY(), e.getX(), e.getY());
+                root.getChildren().add(currentLine);
+            } else {
+                currentLine = null ;
+            }
+        });
+
+        root.setOnMouseDragged(e -> {
+            if (currentLine != null) {
+                currentLine.setEndX(e.getX());
+                currentLine.setEndY(e.getY());
+
+            }
+
+        });
+        root.setOnMouseReleased(e->{
+            if (currentLine != null){
+                Double xLen = Math.pow(cueBall.getX()-e.getX(), 2);
+                Double yLen = Math.pow(cueBall.getY()- e.getY(), 2);
+                Double EuclideanDistance = Math.sqrt(xLen+yLen);
+                Double VectorX = cueBall.getX()-e.getX();
+                Double VectorY = cueBall.getY()-e.getY();
+                Double Magnitude = Math.sqrt((Math.pow(VectorX, 2)+Math.pow(VectorY,2)));
+                Double UnitVectorX = VectorX/Magnitude;
+                Double UnitVectorY = VectorY/Magnitude;
+                System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Strength "+ EuclideanDistance);
+
+                root.getChildren().remove(currentLine);
+                cueBall.setVelocityX(EuclideanDistance*VectorX);
+                cueBall.setVelocityY(EuclideanDistance*VectorY);
+            }
+        });
 
     }
 

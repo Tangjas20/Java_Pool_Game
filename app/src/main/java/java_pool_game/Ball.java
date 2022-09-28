@@ -33,6 +33,13 @@ public class Ball {
     public Double getY(){
         return this.posY;
     }
+    public void setVelocityX(Double velX){
+        this.velocityX = velX;
+    }
+
+    public void setVelocityY(Double velY){
+        this.velocityY = velY;
+    }
 
 }
 

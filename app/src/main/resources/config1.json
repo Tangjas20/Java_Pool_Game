@@ -3,7 +3,7 @@
     "colour": "red",
     "friction": 1.0,
     "size": {
-      "x": 300,
+      "x": 200,
       "y": 800
     }
   },
