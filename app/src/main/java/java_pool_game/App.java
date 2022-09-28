@@ -235,8 +235,13 @@ public class App extends Application{
 
         root.setOnMousePressed(e -> {
             if (currentLine == null) {
-                currentLine = new Line(cueBall.getX(), cueBall.getY(), e.getX(), e.getY());
-                root.getChildren().add(currentLine);
+                Double xLen = Math.pow(cueBall.getX() - e.getX(), 2);
+                Double yLen = Math.pow(cueBall.getY() - e.getY(), 2);
+                Double EuclideanDistance = Math.sqrt(xLen + yLen);
+                if(EuclideanDistance < cueBall.getRadius()*2) {
+                    currentLine = new Line(cueBall.getX(), cueBall.getY(), e.getX(), e.getY());
+                    root.getChildren().add(currentLine);
+                }
             } else {
                 currentLine = null ;
             }
@@ -251,20 +256,22 @@ public class App extends Application{
 
         });
         root.setOnMouseReleased(e->{
-            if (currentLine != null){
+            if (currentLine != null) {
 
-                Double VectorX = cueBall.getX()-e.getX();
-                Double VectorY = cueBall.getY()-e.getY();
-                Double Magnitude = Math.sqrt((Math.pow(VectorX, 2)+Math.pow(VectorY,2)));
-                Double UnitVectorX = (VectorX/(Magnitude/0.55));
-                Double UnitVectorY = (VectorY/(Magnitude/0.55));
-               // System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Magnitude" + Magnitude);
+                Double VectorX = cueBall.getX() - e.getX();
+                Double VectorY = cueBall.getY() - e.getY();
+                Double Magnitude = Math.sqrt((Math.pow(VectorX, 2) + Math.pow(VectorY, 2)));
+                Double UnitVectorX = (VectorX / (Magnitude / 0.55));
+                Double UnitVectorY = (VectorY / (Magnitude / 0.55));
+                // System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Magnitude" + Magnitude);
 
                 root.getChildren().remove(currentLine);
-                cueBall.setVelocityX(Magnitude*UnitVectorX);
-                cueBall.setVelocityY(Magnitude*UnitVectorY);
-               // System.out.println(cueBall.getVelocityX());
-                //System.out.println(cueBall.getVelocityY());
+                if (cueBall.getVelocityX() == 0.0 && cueBall.getVelocityY() == 0.0) {
+                    cueBall.setVelocityX(Magnitude * UnitVectorX);
+                    cueBall.setVelocityY(Magnitude * UnitVectorY);
+                    // System.out.println(cueBall.getVelocityX());
+                    //System.out.println(cueBall.getVelocityY());
+                }
             }
         });
     }
