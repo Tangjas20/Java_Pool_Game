@@ -8,8 +8,8 @@ public class BlueBall extends Ball implements BallInterface{
 
     public int lives = 1;
 
-    public BlueBall(Double x, Double y, Long radius, Double velocityX, Double velocityY){
-        super(x, y, radius, velocityX, velocityY);
+    public BlueBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
+        super(x, y, radius, velocityX, velocityY, mass);
     }
 
     public String return_colour(){

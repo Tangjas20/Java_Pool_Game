@@ -3,8 +3,8 @@
     "colour": "green",
     "friction": 1.0,
     "size": {
-      "x": 300,
-      "y": 300
+      "x": 600,
+      "y": 600
     }
   },
   "Balls": {

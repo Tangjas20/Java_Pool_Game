@@ -7,8 +7,8 @@ public class WhiteBall extends Ball implements BallInterface{
     public String colour = "WHITE";
 
 
-    public WhiteBall(Double x, Double y, Long radius, Double velocityX, Double velocityY){
-        super(x, y, radius, velocityX, velocityY);
+    public WhiteBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
+        super(x, y, radius, velocityX, velocityY, mass);
     }
 
     public String return_colour(){

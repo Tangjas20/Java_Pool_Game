@@ -11,8 +11,9 @@ public class Ball {
     public Double initialX;
     public Double initialY;
     public String colour;
+    public Double mass;
 
-    public Ball(Double x, Double y, Long radius, Double velocityX, Double velocityY){
+    public Ball(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         this.posX = x;
         this.posY = y;
         this.radius = radius;
@@ -20,6 +21,7 @@ public class Ball {
         this.velocityY = velocityY;
         this.initialX = x;
         this.initialY = y;
+        this.mass = mass;
     }
 
     public String return_colour(){
@@ -33,6 +35,7 @@ public class Ball {
     public Double getY(){
         return this.posY;
     }
+
     public void setVelocityX(Double velX){
         this.velocityX = velX;
     }
@@ -40,7 +43,28 @@ public class Ball {
     public void setVelocityY(Double velY){
         this.velocityY = velY;
     }
+    public Double getVelocityX(){
+        return this.velocityX;
+    }
 
+    public Double getVelocityY(){
+        return this.velocityY;
+    }
+
+    public Double setX(Double x){
+        return this.posX = x;
+    }
+
+    public Double setY(Double y){
+        return this.posY = y;
+    }
+
+    public Long getRadius(){
+        return this.radius;
+    }
+    public Double getMass(){
+        return this.mass;
+    }
 }
 
 /*

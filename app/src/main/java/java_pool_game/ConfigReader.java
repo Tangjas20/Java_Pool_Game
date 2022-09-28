@@ -73,15 +73,15 @@ public class ConfigReader {
 
                 Double mass = (Double) jsonBall.get("mass");
                 if (colour.toUpperCase().equals("BLUE")) {
-                    BlueBall ball = new BlueBall(positionX, positionY, radius, velocityX, velocityY);
+                    BlueBall ball = new BlueBall(positionX, positionY, radius, velocityX, velocityY, mass);
                     ball_array.add(ball);
                 }
                 else if (colour.toUpperCase().equals("RED")) {
-                    RedBall ball = new RedBall(positionX, positionY, radius, velocityX, velocityY);
+                    RedBall ball = new RedBall(positionX, positionY, radius, velocityX, velocityY, mass);
                     ball_array.add(ball);
                 }
                 else if (colour.toUpperCase().equals("WHITE")){
-                    WhiteBall ball = new WhiteBall(positionX, positionY, radius, velocityX, velocityY);
+                    WhiteBall ball = new WhiteBall(positionX, positionY, radius, velocityX, velocityY, mass);
                     ball_array.add(ball);
                 }
             }

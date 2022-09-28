@@ -9,11 +9,11 @@ public class GeneratePockets {
         ArrayList<Pockets> GeneratedPocketList = new ArrayList<>();
         //Find coordinates of each corner
         //Bottom Right + margin
-        Pockets pocketBottomRight = new Pockets(boardX, boardY, radius);
+        Pockets pocketBottomRight = new Pockets(boardX-radius, boardY-radius, radius);
         GeneratedPocketList.add(pocketBottomRight);
         //Top Right
         System.out.println("BoardX = " + boardX);
-        Pockets pocketTopRight = new Pockets(boardX, 0L+ radius, radius);
+        Pockets pocketTopRight = new Pockets(boardX-radius, 0L+ radius, radius);
         GeneratedPocketList.add(pocketTopRight);
 
         //Top Left
@@ -21,7 +21,7 @@ public class GeneratePockets {
         GeneratedPocketList.add(pocketTopLeft);
 
         //BottomLeft
-        Pockets pocketBottomLeft = new Pockets(0L+radius, boardY, radius);
+        Pockets pocketBottomLeft = new Pockets(0L+radius, boardY-radius, radius);
         GeneratedPocketList.add(pocketBottomLeft);
 
         //Top Middle
@@ -29,7 +29,7 @@ public class GeneratePockets {
         GeneratedPocketList.add(pocketTopMiddle);
 
         //Bottom Middle
-        Pockets pocketBottomMiddle = new Pockets(boardX/2+radius/2, boardY, radius);
+        Pockets pocketBottomMiddle = new Pockets(boardX/2+radius/2, boardY-radius, radius);
         GeneratedPocketList.add(pocketBottomMiddle);
 
         return GeneratedPocketList;
