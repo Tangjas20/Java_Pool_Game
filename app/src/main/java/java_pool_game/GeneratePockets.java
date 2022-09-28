@@ -12,7 +12,7 @@ public class GeneratePockets {
         Pockets pocketBottomRight = new Pockets(boardX-radius, boardY-radius, radius);
         GeneratedPocketList.add(pocketBottomRight);
         //Top Right
-        System.out.println("BoardX = " + boardX);
+        //System.out.println("BoardX = " + boardX);
         Pockets pocketTopRight = new Pockets(boardX-radius, 0L+ radius, radius);
         GeneratedPocketList.add(pocketTopRight);
 

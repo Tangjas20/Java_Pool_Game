@@ -6,6 +6,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -23,6 +24,7 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class App extends Application{
@@ -31,19 +33,18 @@ public class App extends Application{
     private Ball cueBall;
     private Line currentLine;
     private ArrayList<Circle> circ;
+    private String path = "config.json";
     public App(){
     }
     @Override
     public void start(Stage primaryStage){
         //Sets up the ConfigReader and reads from the path specified
-        ConfigReader config = new ConfigReader("config.json");
-        System.out.println(config.path);
+        ConfigReader config = new ConfigReader(this.path);
+       // System.out.println(config.path);
         config.parse();
         this.ballsInPlay = config.returnBalls();
         primaryStage.setTitle("Pool_game");
-        //primaryStage.setResizable(false);
-        //primaryStage.setWidth(config.boardX());
-        //primaryStage.setHeight(config.boardX());
+
 
 
         //Creates the JavaFX scene and paints background depending on config
@@ -55,7 +56,7 @@ public class App extends Application{
         Canvas canvas = new Canvas(config.boardX(), config.boardY());
 
         //canvas.setWidth(config.boardX());
-        System.out.println(config.boardX());
+        //System.out.println(config.boardX());
         //Generate balls from the config file. These circles translate the balls objects to circles displayed
 
 
@@ -74,6 +75,7 @@ public class App extends Application{
                 //Changes pocket objects into Circle objects
                 ArrayList<Circle> pockets = generatePocketsToCircles(pocketList);
 
+<<<<<<< Updated upstream
                 if (-0.05 < cueBall.getVelocityX() && cueBall.getVelocityX() < 0.05 ){
                     cueBall.setVelocityX(0.00);
                 }
@@ -104,17 +106,55 @@ public class App extends Application{
                             Point2D cueBallVelocity = new Point2D(cueBall.getVelocityX(), cueBall.getVelocityY());
                             Pair<Point2D, Point2D> collision = calculateCollision(cueBallPoint, cueBallVelocity, cueBall.getMass(), ballpoint, ballVelocity, ball.getMass());
                             System.out.println(collision.get);
+=======
+                moveBall(cueBall);
+
+                for(Ball ball : ballsInPlay) {
+                    for (Ball ball1 : ballsInPlay) {
+                        if (ball != ball1) {
+                            Double xLen = Math.pow(ball1.getX() - ball.getX(), 2);
+                            Double yLen = Math.pow(ball1.getY() - ball.getY(), 2);
+                            Double EuclideanDistance = Math.sqrt(xLen + yLen);
+                            if (EuclideanDistance <= ball.getRadius()*2.2) {
+                                Point2D ballpoint = new Point2D(ball.getX(), ball.getY());
+                                Point2D ballVelocity = new Point2D(ball.getVelocityX(), ball.getVelocityY());
+                                Point2D cueBallPoint = new Point2D(ball1.getX(), ball1.getY());
+                                Point2D cueBallVelocity = new Point2D(ball1.getVelocityX(), ball1.getVelocityY());
+                                Pair<Point2D, Point2D> collision = calculateCollision(cueBallPoint, cueBallVelocity, ball1.getMass(), ballpoint, ballVelocity, ball.getMass());
+                                Point2D cueBallPair = collision.getKey();
+                                Point2D collisionBall = collision.getValue();
+                                ball.setVelocityX(cueBallPair.getX());
+                                ball.setVelocityY(cueBallPair.getY());
+                                ball1.setVelocityX(collisionBall.getX());
+                                ball1.setVelocityY(collisionBall.getY());
+                            }
+                            boundaryCheck(ball, config);
+                            moveBall(ball);
+                            ballsInPlay = checkBallInPocket(pocketList, ballsInPlay, config);
+
+>>>>>>> Stashed changes
                         }
                     }
                 }
 
-                System.out.println(cueBall.getVelocityX());
+                if(ballsInPlay.contains(cueBall) == false){
+                    System.out.println( "Restarting app!" );
+                    primaryStage.close();
+                    Platform.runLater( () -> App.this.start( new Stage() ) );
+                }
+                if(ballsInPlay.size() == 1){
+                    System.out.println("******************************************");
+                    System.out.println("****************!!YOU WIN!!***************");
+                    System.out.println("******************************************");
+                }
+                //System.out.println(cueBall.getVelocityX());
                 circ = generateCircle(ballsInPlay);
                 root.getChildren().addAll(circ);
                 root.getChildren().addAll(pockets);
 
             }
         };
+
         timer.start();
 
         //https://mkyong.com/javafx/javafx-animated-ball-example/
@@ -130,49 +170,100 @@ public class App extends Application{
         */
 
         mouseEvents(root);
-
         primaryStage.setScene(scene);
         root.getChildren().add(canvas);
-
         primaryStage.show();
-
-        /*Bounds bounds = canvas.getBoundsInLocal();
-        Timeline animationLoop = new Timeline();
-        animationLoop.setCycleCount(Timeline.INDEFINITE);
-        KeyFrame frame = new KeyFrame(Duration.seconds(KEY_FRAME_DURATION),
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        int dx = 1;
-                        int dy = 1;
-                        Circle circle = circ.get(0);
-                        Double xMin = circle.getBoundsInParent().getMinX();
-                        Double yMin = circle.getBoundsInParent().getMinY();
-                        Double xMax = circle.getBoundsInParent().getMaxX();
-                        Double yMax = circle.getBoundsInParent().getMaxY();
-                        if (xMin < 0 || xMax > scene.getWidth()) {
-                            dx = dx * -1;
-                        }
-                        if (yMin < 0 || yMax > scene.getHeight()) {
-                            dy = dy * -1;
-                        }
-
-                        circle.setTranslateX(circle.getTranslateX() + dx);
-                        circle.setTranslateY(circle.getTranslateY() + dy);
-
-                    }
-                });
-        animationLoop.getKeyFrames().add(frame);
-        animationLoop.play();*/
-
-
 
     }
     public static void main(String[] args){
         launch(args);
-
     }
 
+    public static void boundaryCheck(Ball ball, ConfigReader config){
+        if ((ball.posX) <= 0.0+ball.getRadius()){
+            ball.setX(0.0+ball.getRadius());
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        else if (ball.posX >= config.boardX()-ball.getRadius()){
+            ball.setX(config.boardX()- (0.0 + ball.getRadius()));
+            ball.setVelocityX(-ball.getVelocityX());
+        }
+        else if (ball.posY <= 0.0+ball.getRadius()){
+            ball.setY(0.0+ball.getRadius());
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+        else if (ball.posY >= config.boardY()-ball.getRadius()){
+            ball.setY(config.boardY()-(0.0+ball.getRadius()));
+            ball.setVelocityY(-ball.getVelocityY());
+        }
+    }
+
+    public static ArrayList<Ball> checkBallInPocket(ArrayList<Pockets> PocketList, ArrayList<Ball> ball, ConfigReader config){
+        ArrayList<Ball> ballsInPlay = ball;
+        ArrayList<Ball> modifiedList = ball;
+       // ArrayList<Ball> test = new ArrayList<Ball>();
+
+        for (Ball balls : ballsInPlay){
+            for (Pockets pocket: PocketList){
+                Double xLen = Math.pow(balls.getX() - pocket.getX(), 2);
+                Double yLen = Math.pow(balls.getY() - pocket.getY(), 2);
+                Double EuclideanDistance = Math.sqrt(xLen + yLen);
+                if (EuclideanDistance <= balls.getRadius()*2) {
+                    if(balls.return_colour().equals("RED")){
+                        modifiedList.remove(balls);
+                    }
+                    else if (balls.return_colour().equals("BLUE")){
+                       if (((BlueBall) balls).getLives() == 1){
+                           Boolean noBallInOriginalSpot = true;
+                           for(Ball otherBalls: ballsInPlay){
+                               Double xLength = Math.pow(otherBalls.getX() - balls.initialX, 2);
+                               Double yLength = Math.pow(otherBalls.getY() - balls.initialY, 2);
+                               Double EucDistance = Math.sqrt(xLen + yLen);
+                               if(balls.getRadius()*1.5 <= EucDistance){
+                                   noBallInOriginalSpot = false;
+                               }
+                           }
+                           if (noBallInOriginalSpot = true) {
+                               ((BlueBall) balls).loseBallLife();
+                               balls.setVelocityY(0.0);
+                               balls.setVelocityX(0.0);
+                           }
+                           else{
+                               modifiedList.remove(balls);
+                           }
+                       }
+                       else{
+                           modifiedList.remove(balls);
+                       }
+
+                    }
+                    else if(balls.return_colour().equals("WHITE")){
+                        modifiedList.remove(balls);
+
+                    }
+                }
+            }
+        }
+
+        return modifiedList;
+    }
+    public static void moveBall(Ball ball){
+        if (-0.05 < ball.getVelocityX() && ball.getVelocityX() < 0.05 ){
+            ball.setVelocityX(0.00);
+        }
+        else {
+            ball.posX -= ball.getVelocityX() / 50;
+            ball.setVelocityX(ball.getVelocityX() - ball.getVelocityX() / 50);
+        }
+
+        if (-0.05 < ball.getVelocityY() && ball.getVelocityY() < 0.05 ){
+            ball.setVelocityY(0.00);
+        }
+        else{
+            ball.posY -= ball.getVelocityY()/50;
+            ball.setVelocityY(ball.getVelocityY()-ball.getVelocityY()/50);
+        }
+    }
     public void mouseEvents(Group root){
 
         root.setOnMousePressed(e -> {
@@ -198,15 +289,15 @@ public class App extends Application{
                 Double VectorX = cueBall.getX()-e.getX();
                 Double VectorY = cueBall.getY()-e.getY();
                 Double Magnitude = Math.sqrt((Math.pow(VectorX, 2)+Math.pow(VectorY,2)));
-                Double UnitVectorX = (VectorX/Magnitude);
-                Double UnitVectorY = VectorY/Magnitude;
-                System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Magnitude" + Magnitude);
+                Double UnitVectorX = (VectorX/(Magnitude/0.55));
+                Double UnitVectorY = (VectorY/(Magnitude/0.55));
+               // System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Magnitude" + Magnitude);
 
                 root.getChildren().remove(currentLine);
                 cueBall.setVelocityX(Magnitude*UnitVectorX);
                 cueBall.setVelocityY(Magnitude*UnitVectorY);
-                System.out.println(cueBall.getVelocityX());
-                System.out.println(cueBall.getVelocityY());
+               // System.out.println(cueBall.getVelocityX());
+                //System.out.println(cueBall.getVelocityY());
             }
         });
     }
@@ -219,7 +310,7 @@ public class App extends Application{
         ArrayList<Circle> circles = new ArrayList<Circle>();
         for (Ball ball : BallsInPlay){
             if (ball.return_colour().equals("BLUE")){
-                System.out.println("BLUE");
+                //System.out.println("BLUE");
                 //make blue circle
                 Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
                 circle.setFill(Paint.valueOf("BLUE"));
@@ -227,13 +318,13 @@ public class App extends Application{
             }
             else if (ball.return_colour().equals("RED")){
                 //Make red circle
-                System.out.println("RED");
+                //System.out.println("RED");
                 Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
                 circle.setFill(Paint.valueOf("RED"));
                 circles.add(circle);
             }
             else if (ball.return_colour().equals("WHITE")){
-                System.out.println("WHITE");
+                //System.out.println("WHITE");
                 Circle circle = new Circle(ball.getX(), ball.getY(), ball.radius);
                 circle.setFill(Paint.valueOf("WHITE"));
                 circles.add(circle);
@@ -251,54 +342,21 @@ public class App extends Application{
         return circles;
     }
 
-
-    /**
-     * This is an updated collision calculation function for 2 balls colliding in 2D space. You may use it however
-     * you wish for your assignment.
-     *
-     * This uses the optimised physics algorithm discussed here:
-     * http://www.gamasutra.com/view/feature/3015/pool_hall_lessons_fast_accurate_.php?page=3
-     * which has been converted into Java/JavaFX
-     *
-     * @param positionA The coordinates of the centre of ball A
-     * @param velocityA The delta x,y vector of ball A (how much it moves per tick)
-     * @param massA The mass of ball A (for the moment this should always be the same as ball B)
-     * @param positionB The coordinates of the centre of ball B
-     * @param velocityB The delta x,y vector of ball B (how much it moves per tick)
-     * @param massB The mass of ball B (for the moment this should always be the same as ball A)
-     *
-     * @return A Pair<Point2D, Point2D> in which the first (key) Point2D is the new delta x,y vector for ball A, and the second (value) Point2D is the new delta x,y vector for ball B.
-     */
     public static Pair<Point2D, Point2D> calculateCollision(Point2D positionA, Point2D velocityA, double massA, Point2D positionB, Point2D velocityB, double massB) {
-
-        // Find the angle of the collision - basically where is ball B relative to ball A. We aren't concerned with
-        // distance here, so we reduce it to unit (1) size with normalize() - this allows for arbitrary radii
         Point2D collisionVector = positionA.subtract(positionB);
         collisionVector = collisionVector.normalize();
-
-        // Here we determine how 'direct' or 'glancing' the collision was for each ball
         double vA = collisionVector.dotProduct(velocityA);
         double vB = collisionVector.dotProduct(velocityB);
-
-        // If you don't detect the collision at just the right time, balls might collide again before they leave
-        // each others' collision detection area, and bounce twice.
-        // This stops these secondary collisions by detecting
-        // whether a ball has already begun moving away from its pair, and returns the original velocities
         if (vB <= 0 && vA >= 0) {
             return new Pair<>(velocityA, velocityB);
         }
-
-        // This is the optimisation function described in the gamasutra link. Rather than handling the full quadratic
-        // (which as we have discovered allowed for sneaky typos)
-        // this is a much simpler - and faster - way of obtaining the same results.
         double optimizedP = (2.0 * (vA - vB)) / (massA + massB);
-
-        // Now we apply that calculated function to the pair of balls to obtain their final velocities
         Point2D velAPrime = velocityA.subtract(collisionVector.multiply(optimizedP).multiply(massB));
         Point2D velBPrime = velocityB.add(collisionVector.multiply(optimizedP).multiply(massA));
 
         return new Pair<>(velAPrime, velBPrime);
     }
+
 
 
 }

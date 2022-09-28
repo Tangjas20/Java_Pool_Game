@@ -22,6 +22,10 @@ public class BlueBall extends Ball implements BallInterface{
         this.posY = initialY;
     }
 
+    public int getLives(){
+        return this.lives;
+    }
+
 
 }
 
