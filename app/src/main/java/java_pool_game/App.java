@@ -75,38 +75,6 @@ public class App extends Application{
                 //Changes pocket objects into Circle objects
                 ArrayList<Circle> pockets = generatePocketsToCircles(pocketList);
 
-<<<<<<< Updated upstream
-                if (-0.05 < cueBall.getVelocityX() && cueBall.getVelocityX() < 0.05 ){
-                    cueBall.setVelocityX(0.00);
-                }
-                else {
-                    cueBall.posX -= cueBall.getVelocityX() / 60;
-                    cueBall.setVelocityX(cueBall.getVelocityX() - cueBall.getVelocityX() / 60);
-                }
-
-                if (-0.05 < cueBall.getVelocityY() && cueBall.getVelocityY() < 0.05 ){
-                    cueBall.setVelocityY(0.00);
-                }
-                else{
-                    cueBall.posY -= cueBall.getVelocityY()/60;
-                    cueBall.setVelocityY(cueBall.getVelocityY()-cueBall.getVelocityY()/60);
-                }
-
-                for(Ball ball : ballsInPlay){
-                    if (ball.return_colour().equals("WHITE")){
-                    }
-                    else{
-                        Double xLen = Math.pow(cueBall.getX()-ball.getX(), 2);
-                        Double yLen = Math.pow(cueBall.getY()- ball.getY(), 2);
-                        Double EuclideanDistance = Math.sqrt(xLen+yLen);
-                        if (EuclideanDistance < ball.getRadius()){
-                            Point2D ballpoint = new Point2D(ball.getX(), ball.getY());
-                            Point2D ballVelocity = new Point2D(ball.getVelocityX(), ball.getVelocityY());
-                            Point2D cueBallPoint = new Point2D(cueBall.getX(), cueBall.getY());
-                            Point2D cueBallVelocity = new Point2D(cueBall.getVelocityX(), cueBall.getVelocityY());
-                            Pair<Point2D, Point2D> collision = calculateCollision(cueBallPoint, cueBallVelocity, cueBall.getMass(), ballpoint, ballVelocity, ball.getMass());
-                            System.out.println(collision.get);
-=======
                 moveBall(cueBall);
 
                 for(Ball ball : ballsInPlay) {
@@ -132,7 +100,6 @@ public class App extends Application{
                             moveBall(ball);
                             ballsInPlay = checkBallInPocket(pocketList, ballsInPlay, config);
 
->>>>>>> Stashed changes
                         }
                     }
                 }
