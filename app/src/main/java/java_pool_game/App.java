@@ -192,14 +192,10 @@ public class App extends Application{
 
         }
         //System.out.println(removalIndex);
-            List<Ball> ball2 = new ArrayList<>();
-            for (Ball ballTemp : ballsInPlay){
-                if (!(ballTemp.getLife() == 0)){
-                    ball2.add(ballTemp);
-                }
-            }
 
-        return ball2;
+
+        Context context = new Context(new OperationRemoveBalls());
+        return context.executeStrategy(ballsInPlay);
     }
 
     public static void moveBall(Ball ball, Double friction_value){
