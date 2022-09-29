@@ -1,16 +1,11 @@
 package java_pool_game;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.shape.Circle;
-
-import java.util.List;
-
-public class RedBall extends Ball implements BallInterface{
+public class RedAndCreatorBall extends Ball implements BallBuilderAndCreator {
 
     public String colour = "RED";
 
 
-    public RedBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
+    public RedAndCreatorBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         super(x, y, radius, velocityX, velocityY, mass);
         this.lives = 1;
     }

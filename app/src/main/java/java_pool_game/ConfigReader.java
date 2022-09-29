@@ -17,7 +17,7 @@ public class ConfigReader {
     private String tableColour;
     private double friction_value;
     public String path;
-    private ArrayList<Ball> ball_array = new ArrayList<>();
+    private final ArrayList<Ball> ball_array = new ArrayList<>();
     private Long radius;
     public ConfigReader(){
         //this.path = System.getProperty("user.dir") + "/src/main/resources/config.json";
@@ -51,8 +51,7 @@ public class ConfigReader {
             }
             // getting the friction level.
             // This is a double which should affect the rate at which the balls slow down
-            Double tableFriction = (Double) jsonTable.get("friction");
-            System.out.println("Table colour: " + tableColour + ", x: " + tableX + ", y: " + tableY + ", friction: " + tableFriction);
+            friction_value = (Double) jsonTable.get("friction");
             // reading the "Balls" section:
             JSONObject jsonBalls = (JSONObject) jsonObject.get("Balls");
 
@@ -72,18 +71,7 @@ public class ConfigReader {
                 Double velocityY = (Double) ((JSONObject) jsonBall.get("velocity")).get("y");
 
                 Double mass = (Double) jsonBall.get("mass");
-                if (colour.toUpperCase().equals("BLUE")) {
-                    BlueBall ball = new BlueBall(positionX, positionY, radius, velocityX, velocityY, mass);
-                    ball_array.add(ball);
-                }
-                else if (colour.toUpperCase().equals("RED")) {
-                    RedBall ball = new RedBall(positionX, positionY, radius, velocityX, velocityY, mass);
-                    ball_array.add(ball);
-                }
-                else if (colour.toUpperCase().equals("WHITE")){
-                    WhiteBall ball = new WhiteBall(positionX, positionY, radius, velocityX, velocityY, mass);
-                    ball_array.add(ball);
-                }
+                ball_array.add(ballCreator(colour, positionX, positionY, radius, velocityX, velocityY, mass));
             }
 
         } catch (FileNotFoundException e) {
@@ -116,5 +104,19 @@ public class ConfigReader {
     }
 
     public static void main(String[] args) {
+    }
+
+    public Ball ballCreator(String colour, Double positionX, Double positionY, Long radius, Double velocityX, Double velocityY, Double mass){
+        Ball ball = switch (colour.toUpperCase()) {
+            case "RED" -> new RedAndCreatorBall(positionX, positionY, radius, velocityX, velocityY, mass);
+            case "BLUE" -> new BlueAndCreatorBall(positionX, positionY, radius, velocityX, velocityY, mass);
+            case "WHITE" -> new WhiteAndCreatorBall(positionX, positionY, radius, velocityX, velocityY, mass);
+            default -> null;
+        };
+        return ball;
+    }
+
+    public Double getFriction(){
+        return this.friction_value;
     }
 }

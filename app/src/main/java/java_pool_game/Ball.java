@@ -1,6 +1,6 @@
 package java_pool_game;
 
-import javafx.scene.canvas.GraphicsContext;
+
 
 public class Ball {
     public Double posX;
@@ -52,12 +52,12 @@ public class Ball {
         return this.velocityY;
     }
 
-    public Double setX(Double x){
-        return this.posX = x;
+    public void setX(Double x){
+        this.posX = x;
     }
 
-    public Double setY(Double y){
-        return this.posY = y;
+    public void setY(Double y){
+        this.posY = y;
     }
 
     public Long getRadius(){

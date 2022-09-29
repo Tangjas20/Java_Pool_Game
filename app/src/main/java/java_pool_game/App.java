@@ -3,28 +3,19 @@
  */
 package java_pool_game;
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class App extends Application{
@@ -33,14 +24,13 @@ public class App extends Application{
     private Ball cueBall;
     private Line currentLine;
     private List<Circle> circ;
-    private String path = "config1.json";
+    private String path = "config.json";
     public App(){
     }
     @Override
     public void start(Stage primaryStage){
         //Sets up the ConfigReader and reads from the path specified
         ConfigReader config = new ConfigReader(this.path);
-       // System.out.println(config.path);
         config.parse();
         this.ballsInPlay = config.returnBalls();
         primaryStage.setTitle("Pool_game");
@@ -54,11 +44,6 @@ public class App extends Application{
 
         //Configure canvas to config size
         Canvas canvas = new Canvas(config.boardX(), config.boardY());
-
-        //canvas.setWidth(config.boardX());
-        //System.out.println(config.boardX());
-        //Generate balls from the config file. These circles translate the balls objects to circles displayed
-
 
         for (Ball ball: ballsInPlay){
             if (ball.return_colour().equals("WHITE")){
@@ -115,7 +100,6 @@ public class App extends Application{
                     System.out.println("****************!!YOU WIN!!***************");
                     System.out.println("******************************************");
                 }
-                //System.out.println(cueBall.getVelocityX());
                 circ = generateCircle(ballsInPlay);
                 root.getChildren().addAll(circ);
                 root.getChildren().addAll(pockets);
@@ -196,13 +180,13 @@ public class App extends Application{
                            }
 
                            if (noBallInOriginalSpot = true) {
-                               BlueBall test = (BlueBall) balls;
+                               BlueAndCreatorBall test = (BlueAndCreatorBall) balls;
                                test.loseBallLife();
                                balls.setVelocityY(0.0);
                                balls.setVelocityX(0.0);
                            }
                            else{
-                               BlueBall test = (BlueBall) balls;
+                               BlueAndCreatorBall test = (BlueAndCreatorBall) balls;
                                test.loseBallLife();
                            }
                        }
@@ -248,7 +232,7 @@ public class App extends Application{
     }
     public void mouseEvents(Group root){
 
-        root.setOnDragDetected(e -> {
+        root.setOnMousePressed(e -> {
             if (currentLine == null) {
                 Double xLen = Math.pow(cueBall.getX() - e.getX(), 2);
                 Double yLen = Math.pow(cueBall.getY() - e.getY(), 2);

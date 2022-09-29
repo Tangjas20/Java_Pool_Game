@@ -1,13 +1,11 @@
 package java_pool_game;
 
-import javafx.scene.canvas.GraphicsContext;
-
-public class BlueBall extends Ball implements BallInterface{
+public class BlueAndCreatorBall extends Ball implements BallBuilderAndCreator {
 
     public String colour = "BLUE";
 
 
-    public BlueBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
+    public BlueAndCreatorBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         super(x, y, radius, velocityX, velocityY, mass);
         this.lives = 2;
     }

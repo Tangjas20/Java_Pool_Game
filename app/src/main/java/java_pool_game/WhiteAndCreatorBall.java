@@ -1,13 +1,11 @@
 package java_pool_game;
 
-import javafx.scene.canvas.GraphicsContext;
-
-public class WhiteBall extends Ball implements BallInterface{
+public class WhiteAndCreatorBall extends Ball implements BallBuilderAndCreator {
 
     public String colour = "WHITE";
 
 
-    public WhiteBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
+    public WhiteAndCreatorBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         super(x, y, radius, velocityX, velocityY, mass);
         this.lives = 1;
     }
