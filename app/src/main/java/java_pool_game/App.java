@@ -167,9 +167,8 @@ public class App extends Application{
 
     public static ArrayList<Ball> checkBallInPocket(ArrayList<Pockets> PocketList, ArrayList<Ball> ball, ConfigReader config){
         ArrayList<Ball> ballsInPlay = ball;
-        ArrayList<Ball> modifiedList = ball;
-       // ArrayList<Ball> test = new ArrayList<Ball>();
 
+        int removalIndex = -1;
         for (Ball balls : ballsInPlay){
             for (Pockets pocket: PocketList){
                 Double xLen = Math.pow(balls.getX() - pocket.getX(), 2);
@@ -177,7 +176,7 @@ public class App extends Application{
                 Double EuclideanDistance = Math.sqrt(xLen + yLen);
                 if (EuclideanDistance <= balls.getRadius()*2) {
                     if(balls.return_colour().equals("RED")){
-                        modifiedList.remove(balls);
+                        removalIndex = ballsInPlay.indexOf(balls);
                     }
                     else if (balls.return_colour().equals("BLUE")){
                        if (((BlueBall) balls).getLives() == 1){
@@ -186,7 +185,7 @@ public class App extends Application{
                                Double xLength = Math.pow(otherBalls.getX() - balls.initialX, 2);
                                Double yLength = Math.pow(otherBalls.getY() - balls.initialY, 2);
                                Double EucDistance = Math.sqrt(xLen + yLen);
-                               if(balls.getRadius()*1.5 <= EucDistance){
+                               if(balls.getRadius()*2 <= EucDistance){
                                    noBallInOriginalSpot = false;
                                }
                            }
@@ -196,24 +195,30 @@ public class App extends Application{
                                balls.setVelocityX(0.0);
                            }
                            else{
-                               modifiedList.remove(balls);
+                               removalIndex = ballsInPlay.indexOf(balls);
                            }
                        }
                        else{
-                           modifiedList.remove(balls);
+                           removalIndex = ballsInPlay.indexOf(balls);
                        }
 
                     }
                     else if(balls.return_colour().equals("WHITE")){
-                        modifiedList.remove(balls);
-
+                        removalIndex = ballsInPlay.indexOf(balls);
                     }
                 }
             }
+
+        }
+        //System.out.println(removalIndex);
+        if (removalIndex > -1) {
+            ballsInPlay.remove(removalIndex);
         }
 
-        return modifiedList;
+
+        return ballsInPlay;
     }
+
     public static void moveBall(Ball ball){
         if (-0.05 < ball.getVelocityX() && ball.getVelocityX() < 0.05 ){
             ball.setVelocityX(0.00);

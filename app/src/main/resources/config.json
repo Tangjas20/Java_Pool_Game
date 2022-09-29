@@ -68,30 +68,6 @@
           "y": 0.0
         },
         "mass": 1.0
-      },
-      {
-        "colour": "red",
-        "position": {
-          "x": 0.0,
-          "y": 0.0
-        },
-        "velocity": {
-          "x": 0.0,
-          "y": 0.0
-        },
-        "mass": 1.0
-      },
-      {
-        "colour": "red",
-        "position": {
-          "x": 600.0,
-          "y": 0.0
-        },
-        "velocity": {
-          "x": 0.0,
-          "y": 0.0
-        },
-        "mass": 1.0
       }
     ]
   }

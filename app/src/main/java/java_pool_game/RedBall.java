@@ -9,8 +9,10 @@ public class RedBall extends Ball implements BallInterface{
 
     public String colour = "RED";
 
+
     public RedBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         super(x, y, radius, velocityX, velocityY, mass);
+        this.lives = 1;
     }
 
     public String return_colour(){

@@ -12,6 +12,7 @@ public class Ball {
     public Double initialY;
     public String colour;
     public Double mass;
+    protected int lives;
 
     public Ball(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         this.posX = x;
@@ -64,6 +65,14 @@ public class Ball {
     }
     public Double getMass(){
         return this.mass;
+    }
+
+    public int getLife(){
+        return this.lives;
+    }
+
+    public void loseLife(){
+        this.lives -= 1;
     }
 }
 
