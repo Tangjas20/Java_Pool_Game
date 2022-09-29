@@ -25,6 +25,7 @@ public class App extends Application{
     private Line currentLine;
     private List<Circle> circ;
     private String path = "config.json";
+    private Double friction_value;
     public App(){
     }
     @Override
@@ -32,9 +33,10 @@ public class App extends Application{
         //Sets up the ConfigReader and reads from the path specified
         ConfigReader config = new ConfigReader(this.path);
         config.parse();
+        friction_value = config.getFriction();
         this.ballsInPlay = config.returnBalls();
         primaryStage.setTitle("Pool_game");
-
+        primaryStage.setResizable(false);
 
 
         //Creates the JavaFX scene and paints background depending on config
@@ -60,7 +62,7 @@ public class App extends Application{
                 //Changes pocket objects into Circle objects
                 ArrayList<Circle> pockets = generatePocketsToCircles(pocketList);
 
-                moveBall(cueBall);
+                moveBall(cueBall, friction_value);
 
                 for(Ball ball : ballsInPlay) {
                     for (Ball ball1 : ballsInPlay) {
@@ -83,7 +85,7 @@ public class App extends Application{
                                 ball1.setVelocityY(collisionBall.getY());
                             }
                             boundaryCheck(ball, config);
-                            moveBall(ball);
+                            moveBall(ball, friction_value);
                             ballsInPlay = checkBallInPocket(pocketList, ballsInPlay, config);
 
                         }
@@ -110,19 +112,6 @@ public class App extends Application{
 
 
         timer.start();
-
-        //https://mkyong.com/javafx/javafx-animated-ball-example/
-        //http://www.java2s.com/Code/Java/JavaFX/KeyFrameandTimelinebasedanimation.htm
-        /*scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("mouse click detected! " + mouseEvent.getSource());
-                System.out.println(cueBall.getX() +", " + cueBall.getY());
-            }
-        });
-        scene.addEventFilter(MouseEvent.)
-        */
-
         mouseEvents(root);
         primaryStage.setScene(scene);
         root.getChildren().add(canvas);
@@ -179,7 +168,7 @@ public class App extends Application{
                                }
                            }
 
-                           if (noBallInOriginalSpot = true) {
+                           if(noBallInOriginalSpot) {
                                BlueAndCreatorBall test = (BlueAndCreatorBall) balls;
                                test.loseBallLife();
                                balls.setVelocityY(0.0);
@@ -205,7 +194,7 @@ public class App extends Application{
         //System.out.println(removalIndex);
             List<Ball> ball2 = new ArrayList<>();
             for (Ball ballTemp : ballsInPlay){
-                if ((ballTemp.getLife() == 0) == false){
+                if (!(ballTemp.getLife() == 0)){
                     ball2.add(ballTemp);
                 }
             }
@@ -213,21 +202,22 @@ public class App extends Application{
         return ball2;
     }
 
-    public static void moveBall(Ball ball){
+    public static void moveBall(Ball ball, Double friction_value){
+        Double friction = 300*friction_value;
         if (-0.05 < ball.getVelocityX() && ball.getVelocityX() < 0.05 ){
             ball.setVelocityX(0.00);
         }
         else {
-            ball.posX -= ball.getVelocityX() / 50;
-            ball.setVelocityX(ball.getVelocityX() - ball.getVelocityX() / 50);
+            ball.posX -= ball.getVelocityX() / friction;
+            ball.setVelocityX(ball.getVelocityX() - ball.getVelocityX() / friction);
         }
 
         if (-0.05 < ball.getVelocityY() && ball.getVelocityY() < 0.05 ){
             ball.setVelocityY(0.00);
         }
         else{
-            ball.posY -= ball.getVelocityY()/50;
-            ball.setVelocityY(ball.getVelocityY()-ball.getVelocityY()/50);
+            ball.posY -= ball.getVelocityY()/friction;
+            ball.setVelocityY(ball.getVelocityY()-ball.getVelocityY()/friction);
         }
     }
     public void mouseEvents(Group root){
@@ -250,7 +240,6 @@ public class App extends Application{
             if (currentLine != null) {
                 currentLine.setEndX(e.getX());
                 currentLine.setEndY(e.getY());
-
             }
 
         });
@@ -262,14 +251,11 @@ public class App extends Application{
                 Double Magnitude = Math.sqrt((Math.pow(VectorX, 2) + Math.pow(VectorY, 2)));
                 Double UnitVectorX = (VectorX / (Magnitude / 0.55));
                 Double UnitVectorY = (VectorY / (Magnitude / 0.55));
-                // System.out.println("X " + UnitVectorX + ", Y "+ UnitVectorY + "Magnitude" + Magnitude);
 
                 root.getChildren().remove(currentLine);
                 if (cueBall.getVelocityX() == 0.0 && cueBall.getVelocityY() == 0.0) {
                     cueBall.setVelocityX(Magnitude * UnitVectorX);
                     cueBall.setVelocityY(Magnitude * UnitVectorY);
-                    // System.out.println(cueBall.getVelocityX());
-                    //System.out.println(cueBall.getVelocityY());
                 }
             }
         });
