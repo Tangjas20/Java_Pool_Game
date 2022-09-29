@@ -6,10 +6,10 @@ public class BlueBall extends Ball implements BallInterface{
 
     public String colour = "BLUE";
 
-    public int lives = 1;
 
     public BlueBall(Double x, Double y, Long radius, Double velocityX, Double velocityY, Double mass){
         super(x, y, radius, velocityX, velocityY, mass);
+        this.lives = 2;
     }
 
     public String return_colour(){

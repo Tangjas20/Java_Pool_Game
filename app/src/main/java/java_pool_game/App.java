@@ -23,17 +23,17 @@ import javafx.scene.canvas.Canvas;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class App extends Application{
     private static final double KEY_FRAME_DURATION = 0.017;
-    private ArrayList<Ball> ballsInPlay;
+    private List<Ball> ballsInPlay;
     private Ball cueBall;
     private Line currentLine;
-    private ArrayList<Circle> circ;
-    private String path = "config.json";
+    private List<Circle> circ;
+    private String path = "config1.json";
     public App(){
     }
     @Override
@@ -68,7 +68,7 @@ public class App extends Application{
 
         AnimationTimer timer = new AnimationTimer(){
             @Override
-            public void handle(long now){
+            public synchronized void handle(long now){
                 root.getChildren().removeIf(Circle.class::isInstance);
                 GeneratePockets Gen = new GeneratePockets();
                 ArrayList<Pockets> pocketList = Gen.GeneratePocketList(config.boardX(), config.boardY(), (long) (config.getRadius()*1.7));
@@ -83,6 +83,7 @@ public class App extends Application{
                             Double xLen = Math.pow(ball1.getX() - ball.getX(), 2);
                             Double yLen = Math.pow(ball1.getY() - ball.getY(), 2);
                             Double EuclideanDistance = Math.sqrt(xLen + yLen);
+
                             if (EuclideanDistance <= ball.getRadius()*2.2) {
                                 Point2D ballpoint = new Point2D(ball.getX(), ball.getY());
                                 Point2D ballVelocity = new Point2D(ball.getVelocityX(), ball.getVelocityY());
@@ -121,6 +122,8 @@ public class App extends Application{
 
             }
         };
+
+
 
         timer.start();
 
@@ -165,58 +168,65 @@ public class App extends Application{
         }
     }
 
-    public static ArrayList<Ball> checkBallInPocket(ArrayList<Pockets> PocketList, ArrayList<Ball> ball, ConfigReader config){
-        ArrayList<Ball> ballsInPlay = ball;
-
+    public static List<Ball> checkBallInPocket(ArrayList<Pockets> PocketList, List<Ball> ball, ConfigReader config){
+        List<Ball> ballsInPlay = ball;
         int removalIndex = -1;
         for (Ball balls : ballsInPlay){
             for (Pockets pocket: PocketList){
                 Double xLen = Math.pow(balls.getX() - pocket.getX(), 2);
                 Double yLen = Math.pow(balls.getY() - pocket.getY(), 2);
                 Double EuclideanDistance = Math.sqrt(xLen + yLen);
+
                 if (EuclideanDistance <= balls.getRadius()*2) {
                     if(balls.return_colour().equals("RED")){
-                        removalIndex = ballsInPlay.indexOf(balls);
+                        balls.loseLife();
                     }
+
                     else if (balls.return_colour().equals("BLUE")){
-                       if (((BlueBall) balls).getLives() == 1){
+                       if (balls.getLife() == 2){
                            Boolean noBallInOriginalSpot = true;
                            for(Ball otherBalls: ballsInPlay){
                                Double xLength = Math.pow(otherBalls.getX() - balls.initialX, 2);
                                Double yLength = Math.pow(otherBalls.getY() - balls.initialY, 2);
                                Double EucDistance = Math.sqrt(xLen + yLen);
+
                                if(balls.getRadius()*2 <= EucDistance){
                                    noBallInOriginalSpot = false;
                                }
                            }
+
                            if (noBallInOriginalSpot = true) {
-                               ((BlueBall) balls).loseBallLife();
+                               BlueBall test = (BlueBall) balls;
+                               test.loseBallLife();
                                balls.setVelocityY(0.0);
                                balls.setVelocityX(0.0);
                            }
                            else{
-                               removalIndex = ballsInPlay.indexOf(balls);
+                               BlueBall test = (BlueBall) balls;
+                               test.loseBallLife();
                            }
                        }
                        else{
-                           removalIndex = ballsInPlay.indexOf(balls);
+                           balls.loseLife();
                        }
 
                     }
                     else if(balls.return_colour().equals("WHITE")){
-                        removalIndex = ballsInPlay.indexOf(balls);
+                        balls.loseLife();
                     }
                 }
             }
 
         }
         //System.out.println(removalIndex);
-        if (removalIndex > -1) {
-            ballsInPlay.remove(removalIndex);
-        }
+            List<Ball> ball2 = new ArrayList<>();
+            for (Ball ballTemp : ballsInPlay){
+                if ((ballTemp.getLife() == 0) == false){
+                    ball2.add(ballTemp);
+                }
+            }
 
-
-        return ballsInPlay;
+        return ball2;
     }
 
     public static void moveBall(Ball ball){
@@ -238,7 +248,7 @@ public class App extends Application{
     }
     public void mouseEvents(Group root){
 
-        root.setOnMousePressed(e -> {
+        root.setOnDragDetected(e -> {
             if (currentLine == null) {
                 Double xLen = Math.pow(cueBall.getX() - e.getX(), 2);
                 Double yLen = Math.pow(cueBall.getY() - e.getY(), 2);
@@ -285,8 +295,8 @@ public class App extends Application{
 
     }
 
-    public static ArrayList<Circle> generateCircle(ArrayList<Ball> BallsInPlay){
-        ArrayList<Circle> circles = new ArrayList<Circle>();
+    public static List<Circle> generateCircle(List<Ball> BallsInPlay){
+        List<Circle> circles = new ArrayList<Circle>();
         for (Ball ball : BallsInPlay){
             if (ball.return_colour().equals("BLUE")){
                 //System.out.println("BLUE");
